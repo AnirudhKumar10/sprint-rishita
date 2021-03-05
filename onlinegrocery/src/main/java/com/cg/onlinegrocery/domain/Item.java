@@ -1,83 +1,94 @@
 package com.cg.onlinegrocery.domain;
 
-import java.io.Serializable;
-
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+/**
+ * This class is a pojo for item
+ * 
+ * @author Rishita
+ *
+ */
 
 @Entity
-@Table(name = "item_master")
-public class Item implements Serializable {
-
-	@Id
-	@GeneratedValue
+public class Item {
 	@Column(name = "item_id")
-	private Integer id;
-	@Column(name = "item_model")
-	private String model;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int itemId;
 
-	private Double cost;
+	@NotBlank(message = "Item Name Required")
+	private String itemName;
 
-	@Column(name = "company_name")
-	private String company;
+	// @NotBlank(message = "Item Price Required")
+	private double itemPrice;
+
+	@NotNull(message = "Item Quantity Required")
+	private int itemQuantity;
+
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@JoinColumn(name = "order_id", updatable = false, nullable = false)
+	@JsonIgnore
+	private Order order;
 
 	public Item() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public Item(Integer id, String model, Double cost, String company) {
 		super();
-		this.id = id;
-		this.model = model;
-		this.cost = cost;
-		this.company = company;
 	}
 
-	public Item(String model, Double cost, String company) {
-		super();
-		this.model = model;
-		this.cost = cost;
-		this.company = company;
+	// getters and setters
+
+	public int getItemId() {
+		return itemId;
 	}
 
-	public Integer getId() {
-		return id;
+	public void setItemId(int itemId) {
+		this.itemId = itemId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public String getItemName() {
+		return itemName;
 	}
 
-	public String getModel() {
-		return model;
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
 	}
 
-	public void setModel(String model) {
-		this.model = model;
+	public double getItemPrice() {
+		return itemPrice;
 	}
 
-	public Double getCost() {
-		return cost;
+	public void setItemPrice(double itemPrice) {
+		this.itemPrice = itemPrice;
+		// this.itemPrice = itemPrice* itemQuantity;
 	}
 
-	public void setCost(Double cost) {
-		this.cost = cost;
+	public int getItemQuantity() {
+		return itemQuantity;
 	}
 
-	public String getCompany() {
-		return company;
+	public void setItemQuantity(int itemQuantity) {
+		this.itemQuantity = itemQuantity;
 	}
 
-	public void setCompany(String company) {
-		this.company = company;
+	@JsonBackReference
+	public Order getOrder() {
+		return order;
 	}
 
-	@Override
-	public String toString() {
-		return "item [id=" + id + ", model=" + model + ", cost=" + cost + ", company=" + company + "]";
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 
 }
